@@ -49,15 +49,12 @@ class MainBloc extends Bloc<MainEvent, MainStates> {
       if (users.where((element) => element.id == userId).isNotEmpty) {
         String name = users.where((element) => element.id == userId).first.name;
         var arrayOfName = name.split(" ");
-        print(arrayOfName);
-
         String value = arrayOfName.length > 2
             ? arrayOfName[1].trimLeft()[0] + arrayOfName[2].trimLeft()[0]
             : arrayOfName.length > 1
-            ? arrayOfName[0].trimLeft()[0] + arrayOfName[1].trimLeft()[0]
-            : arrayOfName[0].trimLeft()[0] + arrayOfName[0].trimLeft()[0];
+                ? arrayOfName[0].trimLeft()[0] + arrayOfName[1].trimLeft()[0]
+                : arrayOfName[0].trimLeft()[0] + arrayOfName[0].trimLeft()[0];
 
-        print(value);
         return "$value";
       } else {
         return "NA";

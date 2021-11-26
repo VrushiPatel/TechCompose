@@ -11,23 +11,43 @@ class _HomeScreenState extends BaseState<HomeScreen> with BasicScreen {
   @override
   Widget buildBody(BuildContext context) {
     print(bloc.posts.length);
-    return ListView(
-      children: bloc.posts
-          .map<ListTile>((post) =>
-          ListTile(
-              title: getTitle(post.body, fontSize: 12),
-              leading: Container(
-                child: getTitle(bloc.getUserInitials(post.userId)),
-              ),
-              trailing: Container(
-                width: 20,
-                height: 20,
-                child: Center(
-                  child: getTitle(bloc.getCommentCount(post.id)),
-                ),
-              ),
-          ))
-          .toList(),
+    return Scaffold(
+      appBar: AppBar(
+        title: getSubTitle("Post Page", color: Colors.white, fontSize: 16),
+      ),
+      body: ListView(
+        padding: EdgeInsets.only(top: 10),
+        children: bloc.posts
+            .map<ListTile>((post) => ListTile(
+                  dense: true,
+                  title: getSubTitle(post.body, fontSize: 12, lines: 3),
+                  leading: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    width: 30,
+                    height: 30,
+                    child: Center(
+                      child: getSubTitle(bloc.getUserInitials(post.userId),
+                          bold: true, color: Colors.white),
+                    ),
+                  ),
+                  trailing: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.lightBlue,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    width: 20,
+                    height: 20,
+                    child: Center(
+                      child: getSubTitle(bloc.getCommentCount(post.id),
+                          bold: true, fontSize: 12, color: Colors.white),
+                    ),
+                  ),
+                ))
+            .toList(),
+      ),
     );
   }
 }
