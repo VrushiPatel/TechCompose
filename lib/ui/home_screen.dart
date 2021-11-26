@@ -17,11 +17,7 @@ class _HomeScreenState extends BaseState<HomeScreen> with BasicScreen {
           ListTile(
               title: getTitle(post.body, fontSize: 12),
               leading: Container(
-                width: 20,
-                height: 20,
-                child: Center(
-                  child: getTitle(bloc.getUserInitials(post.userId)),
-                ),
+                child: getTitle(bloc.getUserInitials(post.userId)),
               ),
               trailing: Container(
                 width: 20,
