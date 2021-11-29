@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 List<PostResponse> postResponseFromJson(String str) => List<PostResponse>.from(json.decode(str).map((x) => PostResponse.fromJson(x)));
 
 String postResponseToJson(List<PostResponse> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
@@ -14,12 +16,16 @@ class PostResponse {
     this.id,
     this.title,
     this.body,
+    this.commentNo,
+    this.creatorName,
   });
 
   int userId;
   int id;
   String title;
   String body;
+  String commentNo;
+  String creatorName;
 
   factory PostResponse.fromJson(Map<String, dynamic> json) => PostResponse(
     userId: json["userId"],

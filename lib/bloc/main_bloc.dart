@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:techcompose/models/comment_response.dart';
@@ -19,14 +22,10 @@ class MainBloc extends Bloc<MainEvent, MainStates> {
   UserRepository userRepository = UserRepository.getInstance();
 
   List<PostResponse> posts;
-  List<CommentResponse> comments;
-  List<UserResponse> users;
 
   // user login flag will be checked
   init() async {
     posts = await userRepository.getPostData();
-    comments = await userRepository.getCommentsData();
-    users = await userRepository.getUsersData();
     this.add(WelcomeIn());
     print("asd = > ${posts.length}");
   }
@@ -44,28 +43,37 @@ class MainBloc extends Bloc<MainEvent, MainStates> {
     }
   }
 
-  String getUserInitials(int userId) {
+  static FutureOr<String> getUserInitialsIsolate(int userId) async {
     try {
-      if (users.where((element) => element.id == userId).isNotEmpty) {
-        String name = users.where((element) => element.id == userId).first.name;
-        var arrayOfName = name.split(" ");
-        String value = arrayOfName.length > 2
-            ? arrayOfName[1].trimLeft()[0] + arrayOfName[2].trimLeft()[0]
-            : arrayOfName.length > 1
-                ? arrayOfName[0].trimLeft()[0] + arrayOfName[1].trimLeft()[0]
-                : arrayOfName[0].trimLeft()[0] + arrayOfName[0].trimLeft()[0];
+      UserRepository userRepository = UserRepository();
+      var user = await userRepository.getUsersData(userId);
+      // if (users.where((element) => element.id == userId).isNotEmpty) {
+      //   String name = users.where((element) => element.id == userId).first.name;
+      String name = user.name;
+      var arrayOfName = name.split(" ");
+      String value = arrayOfName.length > 2
+          ? arrayOfName[1].trimLeft()[0] + arrayOfName[2].trimLeft()[0]
+          : arrayOfName.length > 1
+              ? arrayOfName[0].trimLeft()[0] + arrayOfName[1].trimLeft()[0]
+              : arrayOfName[0].trimLeft()[0] + arrayOfName[0].trimLeft()[0];
 
-        return "$value";
-      } else {
-        return "NA";
-      }
+      return "$value";
+      // } else {
+      //   return "NA";
+      // }
     } catch (e) {
       return "NA";
     }
   }
 
-  String getCommentCount(int id) {
+  Future<String> getUserInitials(int userId) async {
+    return compute(getUserInitialsIsolate, userId);
+  }
+
+  static FutureOr<String> getCommentCountIsolate(int id) async {
     try {
+      UserRepository userRepository = UserRepository();
+      List<CommentResponse> comments = await userRepository.getCommentsData(id);
       if (comments.where((element) => element.postId == id).isNotEmpty) {
         return comments
             .where((element) => element.postId == id)
@@ -77,5 +85,9 @@ class MainBloc extends Bloc<MainEvent, MainStates> {
     } catch (e) {
       return "0";
     }
+  }
+
+  Future<String> getCommentCount(int id) async {
+    return compute(getCommentCountIsolate, id);
   }
 }

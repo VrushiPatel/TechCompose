@@ -22,22 +22,22 @@ class UserRepository {
         )
         .timeout(const Duration(seconds: 60))
         .then((value) {
-      // try {
+      try {
         if (value.statusCode == 200) {
           return postResponseFromJson(value.body);
         } else {
           return [];
         }
-      // } catch (e) {
-      //   return [];
-      // }
+      } catch (e) {
+        return [];
+      }
     });
   }
 
-  Future<List<CommentResponse>> getCommentsData() async {
+  Future<List<CommentResponse>> getCommentsData(int id) async {
     return http.Client()
         .get(
-          "$baseUrl/comments",
+          "$baseUrl/posts/$id/comments",
         )
         .timeout(const Duration(seconds: 60))
         .then((value) {
@@ -53,21 +53,22 @@ class UserRepository {
     });
   }
 
-  Future<List<UserResponse>> getUsersData() async {
+  Future<UserResponse> getUsersData(int id) async {
     return http.Client()
         .get(
-          "$baseUrl/users",
+          "$baseUrl/users/$id",
         )
         .timeout(const Duration(seconds: 60))
         .then((value) {
       try {
         if (value.statusCode == 200) {
-          return userResponseFromJson(value.body);
+          var map = jsonDecode(value.body);
+          return UserResponse.fromJson(map);
         } else {
-          return [];
+          return UserResponse(name: "N A");
         }
       } catch (e) {
-        return [];
+        return UserResponse(name: "N A");
       }
     });
   }
